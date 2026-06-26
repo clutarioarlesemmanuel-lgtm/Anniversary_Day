@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Will You Be Mine? 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background-image: url('img/heart-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        @font-face {
+            font-family: 'CallingFont';
+            src: url('CallingFont.otf') format('opentype');
+        }
+        /* Background GIF Layer */
+        .bg-gif {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('img/bg-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.3;
+            z-index: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .bg-gif.sad {
+            background-image: url('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/3o7TKSjRrfIPjeiVyM/giphy.gif');
+            opacity: 0.5;
+        }
+
+
+        /* Floating Hearts Animation */
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff6b9d;
+            font-size: 20px;
+            animation: float-up 4s ease-in infinite;
+            opacity: 0;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.5) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.5s ease;
+        }
+
+        /* Question Card */
+        .question-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px 30px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(255, 107, 157, 0.3);
+            animation: card-bounce 2s ease infinite;
+            transition: all 0.5s ease;
+        }
+
+        @keyframes card-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .emoji-display {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pulse-emoji 1.5s ease infinite;
+        }
+
+        @keyframes pulse-emoji {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #e91e63;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        /* Buttons */
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-yes {
+            background: linear-gradient(135deg, #ff6b9d, #e91e63);
+            color: white;
+            box-shadow: 0 5px 20px rgba(233, 30, 99, 0.4);
+            z-index: 100;
+            transform-origin: center;
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(233, 30, 99, 0.6);
+        }
+
+        .btn-no {
+            background: #f0f0f0;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .btn-no:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-no.runaway {
+            position: fixed;
+            transition: all 0.3s ease;
+        }
+
+        /* Yes Button Growing Animation */
+        .btn-yes.growing {
+            animation: grow-to-full 3s ease forwards;
+        }
+
+        @keyframes grow-to-full {
+            0% { 
+                transform: scale(1);
+                border-radius: 50px;
+            }
+            100% { 
+                transform: scale(25);
+                border-radius: 0;
+            }
+        }
+
+        /* Gallery Section (Hidden initially) */
+        .gallery-section {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 200;
+            background-image: url("img/heart-bg.jpg");
+            background-size: cover;
+            background-position: center;
+            overflow-y: auto;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .gallery-section.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .gallery-header {
+            text-align: center;
+            padding: 30px 20px;
+            color: #e91e63;
+        }
+
+        .gallery-header h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .gallery-header p {
+            color: #888;
+            font-size: 18px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-bottom: 50px;
+        }
+
+        .gallery-item {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            animation: fade-in-up 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .gallery-item:nth-child(1) { animation-delay: 0.1s; }
+        .gallery-item:nth-child(2) { animation-delay: 0.2s; }
+        .gallery-item:nth-child(3) { animation-delay: 0.3s; }
+        .gallery-item:nth-child(4) { animation-delay: 0.4s; }
+        .gallery-item:nth-child(5) { animation-delay: 0.5s; }
+        .gallery-item:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fade-in-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-caption {
+            padding: 15px;
+            text-align: center;
+            color: #555;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* Sad Meme Overlay */
+        .sad-meme {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 150;
+            text-align: center;
+            animation: shake 0.5s ease;
+        }
+
+        .sad-meme.show {
+            display: block;
+        }
+
+        .sad-meme img {
+            max-width: 300px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .sad-meme p {
+            margin-top: 15px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%) translateX(0); }
+            25% { transform: translate(-50%, -50%) translateX(-10px); }
+            75% { transform: translate(-50%, -50%) translateX(10px); }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            z-index: 300;
+            animation: confetti-fall 3s ease forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Hide elements */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Mobile optimization */
+        @media (max-width: 480px) {
+            .question-card {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            .emoji-display {
+                font-size: 60px;
+            }
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+
+    <!-- Background GIF -->
+    <div class="bg-gif" id="bgGif"></div>
+
+    <!-- Floating Hearts -->
+    <div class="hearts-container" id="heartsContainer"></div>
+
+    <!-- Main Question Container -->
+    <div class="container" id="mainContainer">
+        <div class="question-card" id="questionCard">
+            <div class="emoji-display">🥰</div>
+            <h1>Are you available in our Anniversary?</h1>
+            <p class="subtitle">I have a question for you...</p>
+            
+            <div class="buttons" id="buttonContainer">
+                <button class="btn btn-yes" id="yesBtn" onclick="handleYes()">YES 💕</button>
+                <button class="btn btn-no" id="noBtn" onclick="handleNo()">No 😢</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sad Meme Overlay -->
+    <div class="sad-meme" id="sadMeme">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/3o7TKSjRrfIPjeiVyM/giphy.gif" alt="Sad meme">
+        <p>Please reconsider... 🥺</p>
+    </div>
+
+    <!-- Gallery Section -->
+    <div class="gallery-section" id="gallerySection">
+        <div class="gallery-header">
+            <h2>Our Memories Together 💖</h2>
+            <p>Every moment with you is special</p>
+        </div>
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- Gallery items - REPLACE IMAGE URLs WITH YOUR OWN -->
+            <div class="gallery-item">
+                <img src="img/firstday.jpeg" alt="Memory 1">
+                <div class="gallery-caption">Our first date together 🌹</div>
+            </div>
+            <div class="gallery-item">
+                <img src="img/Screenshot_20211102_113702.jpg" alt="Memory 2">
+                <div class="gallery-caption">That sunset we watched 🌅</div>
+            </div>
+            <div class="gallery-item">
+                <img src="img/thirdday.jpeg" alt="Memory 3">
+                <div class="gallery-caption">Holding hands forever 🤝</div>
+            </div>
+            <div class="gallery-item">
+                <img src="img/1685948294483.jpg" alt="Memory 4">
+                <div class="gallery-caption">Your beautiful smile 😊</div>
+            </div>
+
+        </div>
+
+        <div style="max-width: 650px; margin: 0 auto; background-image: url('img/letter-bg.png'); background-repeat: no-repeat; background-size: 100% 100%; position: relative;">
+            
+            <div class="gallery-caption" style="padding: 85px 25px 130px 75px;">
+                <p class="love-letter" style="font-family: 'CallingFont', cursive; text-align: left; line-height: 1.8; margin: 0; color: #5a3e2b; font-size: 14px;">
+                    My Lab,<br><br>
+
+                    I don't think there will ever be enough words to fully explain how much you mean to me, but I'll try anyway.<br><br>
+
+                    From the moment you came into my life, everything started to feel different—in the best way possible. Simple days became special, ordinary moments became memories, and my world slowly began to revolve around you without me even realizing it. You have this way of making everything lighter, warmer, and more meaningful.<br><br>
+
+                    I love the way you smile, the way you laugh, and even the little things you probably don't notice about yourself. You make me feel safe, understood, and genuinely happy. Being with you feels like home—no matter where we are.<br><br>
+
+                    There are times I may not say it enough, but please know this: I appreciate you more than words can express. I'm grateful for your patience, your kindness, and the love you give so effortlessly. You inspire me to be better every single day.<br><br>
+
+                    No matter what happens, I promise to stand by you, support you, and love you with everything I have. You are not just someone I love—you are the reason my heart feels full.<br><br>
+
+                    Forever yours,<br>
+                    <span class="signature" style="font-size: 17px; font-weight: bold;">bab 💝</span>
+                </p>
+            </div>
+        </div>
+
+
+
+    
+    </div>
+
+    <script>
+        // Create floating hearts
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            const hearts = ['💕', '💖', '💗', '💓', '💝', '❤️', '😍'];
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                container.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 6000);
+            }, 800);
+        }
+        createHearts();
+
+        // Handle NO button click
+        let noClickCount = 0;
+        const sadMemes = [
+            'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/3o7TKSjRrfIPjeiVyM/giphy.gif',
+            'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/l0HlNQ03J5JxX6lva/giphy.gif',
+            'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eGJ6eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/26BRv0ThflsHCqDEk/giphy.gif'
+        ];
+
+        function handleNo() {
+            const noBtn = document.getElementById('noBtn');
+            const bgGif = document.getElementById('bgGif');
+            const sadMeme = document.getElementById('sadMeme');
+            
+            noClickCount++;
+            
+            // Change background to sad meme
+            bgGif.classList.add('sad');
+            
+            // Show sad meme overlay briefly
+            sadMeme.classList.add('show');
+            setTimeout(() => sadMeme.classList.remove('show'), 2000);
+            
+            // Make NO button run away on hover after first click
+            if (noClickCount >= 1) {
+                noBtn.classList.add('runaway');
+                noBtn.addEventListener('mouseover', moveNoButton);
+                noBtn.addEventListener('touchstart', moveNoButton);
+            }
+            
+            // After 3 clicks, make it disappear completely
+            if (noClickCount >= 3) {
+                noBtn.style.transition = 'all 0.5s ease';
+                noBtn.style.opacity = '0';
+                noBtn.style.transform = 'scale(0)';
+                setTimeout(() => noBtn.classList.add('hidden'), 500);
+            }
+        }
+
+        function moveNoButton(e) {
+            const btn = e.target;
+            const maxX = window.innerWidth - btn.offsetWidth - 20;
+            const maxY = window.innerHeight - btn.offsetHeight - 20;
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+            
+            btn.style.left = randomX + 'px';
+            btn.style.top = randomY + 'px';
+        }
+
+        // Handle YES button click
+        function handleYes() {
+            const yesBtn = document.getElementById('yesBtn');
+            const noBtn = document.getElementById('noBtn');
+            const questionCard = document.getElementById('questionCard');
+            const bgGif = document.getElementById('bgGif');
+            const mainContainer = document.getElementById('mainContainer');
+            
+            // Hide NO button immediately
+            noBtn.style.display = 'none';
+            
+            // Change background to happy
+            bgGif.classList.remove('sad');
+            bgGif.classList.add('happy');
+            
+            // Change emoji and text
+            questionCard.querySelector('.emoji-display').textContent = '😍💕';
+            questionCard.querySelector('h1').textContent = 'YAY! I Knew You\'d Say Yes!';
+            questionCard.querySelector('.subtitle').textContent = 'You make me the happiest person alive!';
+            
+            // Start growing the YES button
+            yesBtn.classList.add('growing');
+            yesBtn.textContent = '💖';
+            
+            // Create confetti explosion
+            createConfetti();
+            
+            // After button grows, show gallery
+            setTimeout(() => {
+                mainContainer.style.opacity = '0';
+                setTimeout(() => {
+                    mainContainer.style.display = 'none';
+                    showGallery();
+                }, 500);
+            }, 2500);
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#ff6b9d', '#e91e63', '#ff1744', '#ff4081', '#f50057', '#ff80ab', '#ffd700', '#ff69b4'];
+            
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 30);
+            }
+        }
+
+        // Show gallery
+        function showGallery() {
+            const gallery = document.getElementById('gallerySection');
+            gallery.classList.add('show');
+            
+            // Continue floating hearts in gallery
+            createHearts();
+        }
+
+        // Prevent zoom on double tap for mobile
+        document.addEventListener('dblclick', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+    </script>
+</body>
+</html>
